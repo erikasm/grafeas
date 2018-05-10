@@ -21,42 +21,6 @@ import (
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
 
-func Occurrence(pID, noteName string) *pb.Occurrence {
-	return &pb.Occurrence{
-		Name:        fmt.Sprintf("projects/%s/occurrences/134", pID),
-		ResourceUrl: "gcr.io/foo/bar",
-		NoteName:    noteName,
-		Kind:        pb.Note_PACKAGE_VULNERABILITY,
-		Details: &pb.Occurrence_VulnerabilityDetails{
-			VulnerabilityDetails: &pb.VulnerabilityType_VulnerabilityDetails{
-				Severity:  pb.VulnerabilityType_HIGH,
-				CvssScore: 7.5,
-				PackageIssue: []*pb.VulnerabilityType_PackageIssue{
-					&pb.VulnerabilityType_PackageIssue{
-						SeverityName: "HIGH",
-						AffectedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
-							CpeUri:  "cpe:/o:debian:debian_linux:8",
-							Package: "icu",
-							Version: &pb.VulnerabilityType_Version{
-								Name:     "52.1",
-								Revision: "8+deb8u3",
-							},
-						},
-						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
-							CpeUri:  "cpe:/o:debian:debian_linux:8",
-							Package: "icu",
-							Version: &pb.VulnerabilityType_Version{
-								Name:     "52.1",
-								Revision: "8+deb8u4",
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-}
-
 func Note(pID string) *pb.Note {
 	return &pb.Note{
 		Name:             fmt.Sprintf("projects/%s/notes/CVE-1999-0710", pID),
@@ -158,6 +122,132 @@ func Note(pID string) *pb.Note {
 			&pb.Note_RelatedUrl{
 				Url:   "http://people.ubuntu.com/~ubuntu-security/cve/CVE-2014-9911",
 				Label: "More Info",
+			},
+		},
+	}
+}
+
+func Occurrence(pID, noteName string) *pb.Occurrence {
+	return &pb.Occurrence{
+		Name:        fmt.Sprintf("projects/%s/occurrences/134", pID),
+		ResourceUrl: "gcr.io/foo/bar",
+		NoteName:    noteName,
+		Kind:        pb.Note_PACKAGE_VULNERABILITY,
+		Details: &pb.Occurrence_VulnerabilityDetails{
+			VulnerabilityDetails: &pb.VulnerabilityType_VulnerabilityDetails{
+				Severity:  pb.VulnerabilityType_HIGH,
+				CvssScore: 7.5,
+				PackageIssue: []*pb.VulnerabilityType_PackageIssue{
+					&pb.VulnerabilityType_PackageIssue{
+						SeverityName: "HIGH",
+						AffectedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pb.VulnerabilityType_Version{
+								Name:     "52.1",
+								Revision: "8+deb8u3",
+							},
+						},
+						FixedLocation: &pb.VulnerabilityType_VulnerabilityLocation{
+							CpeUri:  "cpe:/o:debian:debian_linux:8",
+							Package: "icu",
+							Version: &pb.VulnerabilityType_Version{
+								Name:     "52.1",
+								Revision: "8+deb8u4",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func Build_Note(pID string) *pb.Note {
+	return &pb.Note{
+		Name:             fmt.Sprintf("projects/%s/notes/it-devops-node-ts-mocha-example", pID),
+		ShortDescription: "it-devops-node-ts-mocha-example",
+		LongDescription:  "build: it-devops-node-ts-mocha-example",
+		Kind:             pb.Note_BUILD_DETAILS,
+		NoteType: &pb.Note_BuildType{
+			&pb.BuildType{
+				BuilderVersion: "drone",
+				Signature: &pb.BuildSignature{ // Signature of the build in Occurrences pointing to the Note containing this `BuilderDetails`.
+					// PublicKey: <>
+					// Signature: <>
+					KeyId: "key9784659746513",
+					// KeyType: pb.BuildSignature_PKIX_PEM, // Can be unspecified
+				},
+			},
+		},
+	}
+}
+
+func Build_Occurrence(pID, noteName string) *pb.Occurrence {
+	return &pb.Occurrence{
+		Name:        fmt.Sprintf("projects/%s/occurrences/devops-node-ts-mocha-example-build-216", pID),
+		ResourceUrl: "https://drone/it/devops-node-ts-mocha-example/216",
+		NoteName:    noteName, //projects/drone/notes/it-devops-node-ts-mocha-example
+		Kind:        pb.Note_BUILD_DETAILS,
+		Details: &pb.Occurrence_BuildDetails{
+			BuildDetails: &pb.BuildDetails{
+				Provenance: &pb.BuildProvenance{
+					Id:        "devops-node-ts-mocha-example-build-216",
+					ProjectId: pID,
+					BuiltArtifacts: []*pb.Artifact{
+						&pb.Artifact{
+							Name:     "devops-node-mocha-example-0.1.0.tgz",
+							Checksum: "7622d020e4e43d8c322ef55c12f20e1c",
+							Id:       "artifacts.com/someimage@sha256:7622d020e4e43d8c322ef55c12f20e1c",
+						},
+					},
+					// CreateTime: "ss",
+					// StartTime:  "ss",
+					// FinishTime: "ss",
+					Creator: "name.surname@example.com",
+					// LogsBucket: "",
+					// SourceProvenance: "",
+					// TriggerId: "",
+					// BuildOptions: "",
+					// BuilderVersion: "",
+				},
+				ProvenanceBytes: "{\"id\":\"devops-node-ts-mocha-example-build-216\",\"project_id\":\"drone :: it :: devops-node-ts-mocha-example\",\"built_artifacts\":[{\"name\":\"devops-node-mocha-example-0.1.0.tgz\",\"checksum\":\"7622d020e4e43d8c322ef55c12f20e1c\"}],\"creator\":\"lukas.supienis@adform.com\",\"source_provenance\":{\"Source\":null,\"context\":{\"Context\":{\"Git\":{\"url\":\"https://gitz.adform.com/it/devops-node-ts-mocha-example/commit/131170b9bf5f507838d76a3da08d6a305d036ed9\",\"revision_id\":\"refs/heads/test/grafeas\"}}}},\"builder_version\":\"drone\"}",
+			},
+		},
+	}
+}
+
+func Deployment_Note(pID string) *pb.Note {
+	return &pb.Note{
+		Name:             fmt.Sprintf("projects/%s/notes/it-devops-node-ts-mocha-example-deployment", pID),
+		ShortDescription: "it-devops-node-ts-mocha-example",
+		LongDescription:  "it-devops-node-ts-mocha-example deployment",
+		Kind:             pb.Note_DEPLOYABLE,
+		NoteType: &pb.Note_Deployable{
+			&pb.Deployable{
+				ResourceUri: []string{
+					"artifacts.com/someimage@sha256:7622d020e4e43d8c322ef55c12f20e1c",
+					"artifacts.com/someimage@sha256:7622d020e4e43d8c322ef55c12f20e1d",
+				},
+			},
+		},
+	}
+}
+
+func Deployment_Occurrence(pID, noteName string) *pb.Occurrence {
+	return &pb.Occurrence{
+		Name:        fmt.Sprintf("projects/%s/occurrences/devops-node-ts-mocha-example-deployment-216", pID),
+		ResourceUrl: "artifacts.com/someimage@sha256:7622d020e4e43d8c322ef55c12f20e1c",
+		NoteName:    noteName, //projects/drone/notes/it-devops-node-ts-mocha-example
+		Kind:        pb.Note_DEPLOYABLE,
+		Details: &pb.Occurrence_DeploymentDetails{
+			DeploymentDetails: &pb.Deployable_DeploymentDetails{
+				UserEmail: "name.surname@example.com",
+				// DeployTime:   "",
+				// UndeployTime: "",
+				Config:   "config string",
+				Address:  "Address of the runtime element hosting this deployment.",
+				Platform: pb.Deployable_DeploymentDetails_CUSTOM,
 			},
 		},
 	}
