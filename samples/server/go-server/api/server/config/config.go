@@ -68,7 +68,7 @@ func LoadConfig(fileName string) (*config, error) {
 	}
 	config := configFile.Grafeas
 
-	if config.StorageType == "postgres" {
+	if config.StorageType == "postgres" || config.StorageType == "postgresjsonb" {
 		// Generate a pagination key if none is provided.
 		if config.PgSQLConfig.PaginationKey == "" {
 			log.Println("pagination key is empty, generating...")

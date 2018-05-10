@@ -16,11 +16,7 @@ package testutil
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/any"
 	pb "github.com/grafeas/grafeas/v1alpha1/proto"
 	opspb "google.golang.org/genproto/googleapis/longrunning"
 )
@@ -168,15 +164,15 @@ func Note(pID string) *pb.Note {
 }
 
 func Operation(pID string) *opspb.Operation {
-	md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
-	bytes, err := proto.Marshal(md)
-	if err != nil {
-		log.Printf("Error parsing bytes: %v", err)
-		return nil
-	}
+	// md := &pb.OperationMetadata{CreateTime: ptypes.TimestampNow()}
+	// bytes, err := proto.Marshal(md)
+	// if err != nil {
+	// 	log.Printf("Error parsing bytes: %v", err)
+	// 	return nil
+	// }
 	return &opspb.Operation{
-		Name:     fmt.Sprintf("projects/%s/operations/foo", pID),
-		Metadata: &any.Any{Value: bytes},
-		Done:     false,
+		Name: fmt.Sprintf("projects/%s/operations/foo", pID),
+		// Metadata: &any.Any{Value: bytes},
+		Done: false,
 	}
 }

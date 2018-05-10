@@ -1,6 +1,7 @@
-FROM golang:1.9
+FROM golang:1.10
 COPY . /go/src/github.com/grafeas/grafeas/
 WORKDIR /go/src/github.com/grafeas/grafeas/samples/server/go-server/api/server/main
+RUN CGO_ENABLED=0 go test ../storage/ -v -run TestPgSQLJsonbStore
 RUN CGO_ENABLED=0 go build -o grafeas-server .
 
 FROM alpine:latest

@@ -44,6 +44,8 @@ func createStorage(storageType string, pgSQLConfig *storage.PgSQLConfig) server.
 		return storage.NewMemStore()
 	case "postgres":
 		return storage.NewPgSQLStore(pgSQLConfig)
+	case "postgresjsonb":
+		return storage.NewPgSQLJsonbStore(pgSQLConfig)
 	default:
 		log.Fatalf("Storage type unsupported: %s", storageType)
 	}
