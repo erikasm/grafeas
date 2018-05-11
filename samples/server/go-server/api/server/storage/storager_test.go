@@ -67,6 +67,38 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 	})
 
+	t.Run("CreateBuildNote", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		nPID := "drone-build"
+		n := testutil.Build_Note(nPID)
+		if err := s.CreateNote(n); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+		// Try to insert the same note twice, expect failure.
+		if err := s.CreateNote(n); err == nil {
+			t.Errorf("CreateNote got success, want Error")
+		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+			t.Errorf("CreateNote got code %v want %v", s.Code(), codes.AlreadyExists)
+		}
+	})
+
+	t.Run("CreateDeploymentNote", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		nPID := "package-deployment"
+		n := testutil.Deployment_Note(nPID)
+		if err := s.CreateNote(n); err != nil {
+			t.Errorf("CreateNote got %v want success", err)
+		}
+		// Try to insert the same note twice, expect failure.
+		if err := s.CreateNote(n); err == nil {
+			t.Errorf("CreateNote got success, want Error")
+		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+			t.Errorf("CreateNote got code %v want %v", s.Code(), codes.AlreadyExists)
+		}
+	})
+
 	t.Run("CreateOccurrence", func(t *testing.T) {
 		s, cleanUp := createStore(t)
 		defer cleanUp()
@@ -77,6 +109,66 @@ func doTestStorager(t *testing.T, createStore func(t *testing.T) (server.Storage
 		}
 		oPID := "occurrence-project"
 		o := testutil.Occurrence(oPID, n.Name)
+		if err := s.CreateOccurrence(o); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		// Try to insert the same occurrence twice, expect failure.
+		if err := s.CreateOccurrence(o); err == nil {
+			t.Errorf("CreateOccurrence got success, want Error")
+		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+			t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.AlreadyExists)
+		}
+		pID, oID, err := name.ParseOccurrence(o.Name)
+		if err != nil {
+			t.Fatalf("Error parsing projectID and occurrenceID %v", err)
+		}
+		if got, err := s.GetOccurrence(pID, oID); err != nil {
+			t.Fatalf("GetOccurrence got %v, want success", err)
+		} else if !reflect.DeepEqual(got, o) {
+			t.Errorf("GetOccurrence got %v, want %v", got, o)
+		}
+	})
+
+	t.Run("CreateOccurrence", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		nPID := "vulnerability-scanner-a"
+		n := testutil.Note(nPID)
+		if err := s.CreateNote(n); err != nil {
+			t.Fatalf("CreateNote got %v want success", err)
+		}
+		oPID := "occurrence-project"
+		o := testutil.Occurrence(oPID, n.Name)
+		if err := s.CreateOccurrence(o); err != nil {
+			t.Errorf("CreateOccurrence got %v want success", err)
+		}
+		// Try to insert the same occurrence twice, expect failure.
+		if err := s.CreateOccurrence(o); err == nil {
+			t.Errorf("CreateOccurrence got success, want Error")
+		} else if s, _ := status.FromError(err); s.Code() != codes.AlreadyExists {
+			t.Errorf("CreateOccurrence got code %v want %v", s.Code(), codes.AlreadyExists)
+		}
+		pID, oID, err := name.ParseOccurrence(o.Name)
+		if err != nil {
+			t.Fatalf("Error parsing projectID and occurrenceID %v", err)
+		}
+		if got, err := s.GetOccurrence(pID, oID); err != nil {
+			t.Fatalf("GetOccurrence got %v, want success", err)
+		} else if !reflect.DeepEqual(got, o) {
+			t.Errorf("GetOccurrence got %v, want %v", got, o)
+		}
+	})
+
+	t.Run("CreateBuildOccurrence", func(t *testing.T) {
+		s, cleanUp := createStore(t)
+		defer cleanUp()
+		nPID := "drone-build"
+		n := testutil.Build_Note(nPID)
+		if err := s.CreateNote(n); err != nil {
+			t.Fatalf("CreateNote got %v want success", err)
+		}
+		oPID := "drone-build"
+		o := testutil.Build_Occurrence(oPID, n.Name)
 		if err := s.CreateOccurrence(o); err != nil {
 			t.Errorf("CreateOccurrence got %v want success", err)
 		}
